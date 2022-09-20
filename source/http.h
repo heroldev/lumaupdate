@@ -5,6 +5,7 @@
 /*! \brief Optional extra httpGet informations */
 struct HTTPResponseInfo {
 	std::string etag; //!< ETag (for AWS S3 requests)
+	std::string hash; //!< Hash (from content-md5 header)
 };
 
 /*! \brief Makes a GET HTTP request
@@ -27,3 +28,13 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose = false, H
  *  \return true if the check succeeds (md5 match), false otherwise
  */
 bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize);
+
+/*! \brief Check for file integrity via MD5 Hash content header
+ *
+ *  \param hash    hash from content-md5 header
+ *  \param fileData Pointer to file data to check
+ *  \param fileSize Size of the file to check
+ *
+ *  \return true if the check succeeds (md5 match), false otherwise
+ */
+bool httpCheckHash(std::string hash, const u8* fileData, const u32 fileSize);

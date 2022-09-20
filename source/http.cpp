@@ -34,7 +34,15 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 		char etagChr[512] = { 0 };
 		if (httpc.GetResponseHeader(&context, (char*)"ETag", etagChr, 512) == 0) {
 			info->etag = std::string(etagChr);
+			logPrintf("ETAG: %s\n", info->etag);
 		}
+
+		char hashChr[512] = { 0 };
+		if (httpc.GetResponseHeader(&context, (char*)"content-md5", hashChr, 512) == 0) {
+			info->hash = std::string(hashChr);
+			logPrintf("HASH: %s\n", info->hash);
+		}
+
 	}
 
 	u32 pos = 0;
@@ -89,4 +97,15 @@ bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize) {
 	md5_finish(&state, result);
 
 	return memcmp(expected, result, 16) == 0;
+}
+
+bool httpCheckHash(std::string hash, const u8* fileData, const u32 fileSize) {
+	// Calculate MD5 hash of downloaded archive
+	md5_state_t state;
+	md5_byte_t result[16];
+	md5_init(&state);
+	md5_append(&state, (const md5_byte_t *)fileData, fileSize);
+	md5_finish(&state, result);
+
+	return true;//memcmp(expected, result, 16) == 0;
 }

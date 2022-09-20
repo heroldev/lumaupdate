@@ -222,6 +222,7 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 
 	if (!info.etag.empty()) {
 		logPrintf("Integrity check #2");
+		logPrintf("ETag: %s\n", info.etag);
 		if (!httpCheckETag(info.etag, fileData, fileSize)) {
 			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");
 			gfxFlushBuffers();
