@@ -72,6 +72,10 @@ all : prereq $(OUTPUT).3dsx $(OUTPUT).cia
 cia : prereq $(OUTPUT).cia
 pkg : prereq $(ZIPNAME)
 
+help:
+	@echo 'Sources:'
+	@echo $(CURDIR)
+
 prereq:
 	@[ -d $(CURDIR)/$(BUILD) ] || mkdir -p $(CURDIR)/$(BUILD)
 	@[ -d $(CURDIR)/$(BINDIR) ] || mkdir -p $(CURDIR)/$(BINDIR)
