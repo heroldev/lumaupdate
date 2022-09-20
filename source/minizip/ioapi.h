@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "zlib.h"
+#include <zlib.h>
 
 
 #define fopen64 fopen
