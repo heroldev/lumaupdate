@@ -220,8 +220,21 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 		logPrintf("Skipping integrity check #1 (unknown size)\n");
 	}
 
+	if (!info.hash.empty()) {
+		logPrintf("MD5 hash integrity check");
+		logPrintf("MD5 info hash: %s\n", info.hash);
+		if (!httpCheckHash(info.etag, fileData, fileSize)) {
+			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");
+			gfxFlushBuffers();
+			return false;
+		}
+		logPrintf(" [OK]\r\n");
+	} else {
+		logPrintf("Skipping integrity check #2 (no ETag found)\n");
+	}
+
 	if (!info.etag.empty()) {
-		logPrintf("Integrity check #2");
+		logPrintf("ETag integrity check");
 		logPrintf("ETag: %s\n", info.etag);
 		if (!httpCheckETag(info.etag, fileData, fileSize)) {
 			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");

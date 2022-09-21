@@ -107,5 +107,7 @@ bool httpCheckHash(std::string hash, const u8* fileData, const u32 fileSize) {
 	md5_append(&state, (const md5_byte_t *)fileData, fileSize);
 	md5_finish(&state, result);
 
+	logPrintf((string)(result).c_str());
+
 	return true;//memcmp(expected, result, 16) == 0;
 }
