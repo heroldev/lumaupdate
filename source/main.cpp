@@ -530,7 +530,7 @@ int main(int argc, char* argv[]) {
 					"\n  see screen below for details.\n\n  " \
 					"Reason for failure: %s\n\n  "
 					"If you think this is a bug, please open an\n  " \
-					"issue on the following URL:\n  https://github.com/KunoichiZ/lumaupdate/issues\n\n  " \
+					"issue on the following URL:\n  https://github.com/heroldev/lumaupdate/issues\n\n  " \
 					"Press START to exit.\n", CONSOLE_RED, CONSOLE_RESET, result.errcode.c_str());
 			}
 			gfxFlushBuffers();
@@ -636,7 +636,7 @@ int main(int argc, char* argv[]) {
 					"\n  see screen below for details.\n\n  " \
 					"Reason for failure: %s\n\n  "
 					"If you think this is a bug, please open an\n  " \
-					"issue on the following URL:\n  https://github.com/KunoichiZ/lumaupdate/issues\n\n  " \
+					"issue on the following URL:\n  https://github.com/heroldev/lumaupdate/issues\n\n  " \
 					"Press START to exit.\n", CONSOLE_RED, CONSOLE_RESET, result.errcode.c_str());
 				redraw = false;
 			}
@@ -686,7 +686,7 @@ int main(int argc, char* argv[]) {
 					"\n  see screen below for details.\n\n  " \
 					"Reason for failure: %s\n\n  "
 					"If you think this is a bug, please open an\n  " \
-					"issue on the following URL:\n  https://github.com/KunoichiZ/lumaupdate/issues\n\n  " \
+					"issue on the following URL:\n  https://github.com/heroldev/lumaupdate/issues\n\n  " \
 					"Press START to exit.\n",
 					CONSOLE_RED, CONSOLE_RESET, result.errcode.c_str());
 				redraw = false;

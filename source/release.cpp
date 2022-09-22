@@ -209,7 +209,7 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	logPrintf("Download complete! Size: %lu\n", fileSize);
 
 	if (release.fileSize != 0) {
-		logPrintf("Integrity check #1");
+		logPrintf("Integrity check #1 (Size):");
 		if (fileSize != release.fileSize) {
 			logPrintf(" [ERR]\r\nReceived file is a different size than expected!\n");
 			gfxFlushBuffers();
@@ -221,32 +221,18 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	}
 
 	if (!info.hash.empty()) {
-		logPrintf("MD5 hash integrity check");
-		logPrintf("MD5 info hash: %s\n", info.hash);
-		if (!httpCheckHash(info.etag, fileData, fileSize)) {
+		logPrintf("Integrity check #2 (Hash): ");
+		if (!httpCheckHash(info.hash, fileData, fileSize)) {
 			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");
 			gfxFlushBuffers();
 			return false;
 		}
 		logPrintf(" [OK]\r\n");
 	} else {
-		logPrintf("Skipping integrity check #2 (no ETag found)\n");
+		logPrintf("Skipping integrity check #2 (no Content-MD5 found)\n");
 	}
 
-	if (!info.etag.empty()) {
-		logPrintf("ETag integrity check");
-		logPrintf("ETag: %s\n", info.etag);
-		if (!httpCheckETag(info.etag, fileData, fileSize)) {
-			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");
-			gfxFlushBuffers();
-			return false;
-		}
-		logPrintf(" [OK]\r\n");
-	} else {
-		logPrintf("Skipping integrity check #2 (no ETag found)\n");
-	}
-
-	logPrintf("\nExtracting payload");
+	logPrintf("\nExtracting payload...");
 	gfxFlushBuffers();
 
 	std::string payloadPath;
@@ -273,6 +259,21 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	}
 
 	logPrintf(" [OK]\n");
+	
 	std::free(fileData);
+
+	// uncomment the below code if you want the screen to pause before completing update
+	/*
+	logPrintf("\n Update complete. Press A to continue.\n\n");
+	while(aptMainLoop())
+	{
+		hidScanInput();
+		if((hidKeysDown() & KEY_A))
+		{
+			break;
+		}
+	}
+	*/
+
 	return true;
 }

@@ -1,6 +1,8 @@
 #include "http.h"
 #include "httpc.h"
 
+#include "base64.h"
+
 #include "utils.h"
 
 // libmd5-rfc includes
@@ -34,13 +36,11 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 		char etagChr[512] = { 0 };
 		if (httpc.GetResponseHeader(&context, (char*)"ETag", etagChr, 512) == 0) {
 			info->etag = std::string(etagChr);
-			logPrintf("ETAG: %s\n", info->etag);
 		}
 
 		char hashChr[512] = { 0 };
-		if (httpc.GetResponseHeader(&context, (char*)"content-md5", hashChr, 512) == 0) {
+		if (httpc.GetResponseHeader(&context, (char*)"Content-MD5", hashChr, 512) == 0) {
 			info->hash = std::string(hashChr);
-			logPrintf("HASH: %s\n", info->hash);
 		}
 
 	}
@@ -75,7 +75,8 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 	CHECK(httpc.CloseContext(&context), "Could not close HTTP context");
 }
 
-
+/*
+OLD ETAG METHOD THAT STOPPED WORKING, IT NOW CHECKS THE CONTENT-MD5 HEADER FOR A HASH
 bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize) {
 	// Strip quotes from either side of the etag
 	if (etag[0] == '"') {
@@ -98,8 +99,10 @@ bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize) {
 
 	return memcmp(expected, result, 16) == 0;
 }
+*/
 
 bool httpCheckHash(std::string hash, const u8* fileData, const u32 fileSize) {
+
 	// Calculate MD5 hash of downloaded archive
 	md5_state_t state;
 	md5_byte_t result[16];
@@ -107,11 +110,20 @@ bool httpCheckHash(std::string hash, const u8* fileData, const u32 fileSize) {
 	md5_append(&state, (const md5_byte_t *)fileData, fileSize);
 	md5_finish(&state, result);
 
-	logPrintf("\nmd5 from checkHash: ");
-	for (int i = 0; i < 16; i++) {
-		logPrintf("%x", result[i]);
-	}
-	logPrintf("\n");
+	// source: https://stackoverflow.com/a/261607
+	std::vector<BYTE> md5Vector;
+	md5Vector.insert(md5Vector.end(), &result[0], &result[16]);
 
-	return true;//memcmp(expected, result, 16) == 0;
+	// source: https://stackoverflow.com/a/13935718
+	std::string encodedHash = base64_encode(&md5Vector[0], md5Vector.size());
+
+	std::string expectedmd5 = hash.c_str();
+	std::string resultmd5 = encodedHash.c_str();
+
+	// uncomment these for debugging this function
+	//logPrintf("\nprovided hash: %s\n", hash.c_str());
+	//logPrintf("encoded hash: %s\n", encodedHash.c_str());
+
+	// return true if strings are equal
+	return expectedmd5.compare(resultmd5) == 0;
 }

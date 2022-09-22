@@ -19,16 +19,6 @@ struct HTTPResponseInfo {
  */
 void httpGet(const char* url, u8** buf, u32* size, const bool verbose = false, HTTPResponseInfo* info = nullptr);
 
-/*! \brief Check for file integrity via ETag (MD5)
- *
- *  \param etag     ETag header string
- *  \param fileData Pointer to file data to check
- *  \param fileSize Size of the file to check
- *
- *  \return true if the check succeeds (md5 match), false otherwise
- */
-bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize);
-
 /*! \brief Check for file integrity via MD5 Hash content header
  *
  *  \param hash    hash from content-md5 header

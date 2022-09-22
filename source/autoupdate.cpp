@@ -63,7 +63,7 @@ LatestUpdaterInfo updaterGetLatest() {
 #ifdef FAKEDL
 	return {};
 #else
-	static const char* ReleaseURL = "https://api.github.com/repos/KunoichiZ/lumaupdate/releases/latest";
+	static const char* ReleaseURL = "https://api.github.com/repos/heroldev/lumaupdate/releases/latest";
 
 	jsmn_parser p = {};
 	jsmn_init(&p);
@@ -172,16 +172,18 @@ UpdateResult updaterDoUpdate(LatestUpdaterInfo latest, UpdaterInfo current) {
 	consoleSetProgressData("Checking archive integrity", 0.5);
 	consoleScreen(GFX_BOTTOM);
 
-	if (!info.etag.empty()) {
+	
+	if (!info.hash.empty()) {
 		logPrintf("Performing integrity check... ");
-		if (!httpCheckETag(info.etag, archiveData, archiveSize)) {
+		if (!httpCheckHash(info.hash, archiveData, archiveSize)) {
 			logPrintf(" ERR\nMD5 mismatch between server's and local file!\n");
 			return { false, "DOWNLOAD FAILED" };
 		}
 		logPrintf(" OK\n");
 	} else {
-		logPrintf("Skipping integrity check (no ETag found)\n");
+		logPrintf("Skipping integrity check (no MD5 found)\n");
 	}
+	
 
 	consoleScreen(GFX_TOP);
 	consoleSetProgressData("Extracting archive contents", 0.8);
