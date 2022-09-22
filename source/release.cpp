@@ -209,7 +209,7 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	logPrintf("Download complete! Size: %lu\n", fileSize);
 
 	if (release.fileSize != 0) {
-		logPrintf("Integrity check #1 (Size):");
+		logPrintf("Integrity check #1:");
 		if (fileSize != release.fileSize) {
 			logPrintf(" [ERR]\r\nReceived file is a different size than expected!\n");
 			gfxFlushBuffers();
@@ -221,7 +221,7 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	}
 
 	if (!info.hash.empty()) {
-		logPrintf("Integrity check #2 (Hash): ");
+		logPrintf("Integrity check #2:");
 		if (!httpCheckHash(info.hash, fileData, fileSize)) {
 			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");
 			gfxFlushBuffers();
